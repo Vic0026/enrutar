@@ -6,12 +6,22 @@
 fnc_enrutar_iniciar() {
 	echo fnc_enrutar_iniciar
 	
+	RESULTAT=$($DIR_ENRUTAR/enrutar estat| head -n 1)
+	
+	if [ "$RESULTAT" = "ACTIVAT" ]; then
+	   echo "Ja está activat"
+	   exit
+	fi
+	
 	ip l s dev enp6s0 up
 	ip a a 10.0.1.10/24 dev enp6s0
 	ip r a default via 10.0.1.1
 	resolvectl dns enp6s0 172.29.230.141
 	
-
+	#source $DIR_WAN/wan.conf
+	
+	#sysctl -w net.ipv4.ip_forward=1
+	#iptables -t nat -A POSTROUTING -o   -j MASQUERADE
 }
 
 ######################################################################
@@ -20,8 +30,22 @@ fnc_enrutar_iniciar() {
 fnc_enrutar_aturar() {
 	echo fnc_enrutar_aturar
 	
-
+	RESULTAT=$($DIR_ENRUTAR/enrutar estat| head -n 1)
+	
+	if [ "$RESULTAT" = "DESACTIVAT" ]; then
+	   echo "Ja está desactivat"
+	   exit
+	fi
+	
+	
 	resolvectl revert enp6s0
    	ip route del default via 10.0.1.1
 	ip a d 10.0.1.10/24 dev enp6s0
 	ip link set dev enp6s0 down
+	
+	#source $DIR_WAN/wan.conf
+	
+	#sysctl -w net.ipv4.ip_forward=1
+	#iptables -t nat -A POSTROUTING -o   -j MASQUERADE
+	
+}

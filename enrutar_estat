@@ -4,5 +4,13 @@
 ###  Estat
 ######################################################################
 fnc_enrutar_estat() {
-	echo fnc_enrutar_estat
+	if sysctl -n net.ipv4.ip_forward | grep #falta algo aquí
+	   iptables -t nat -C POSTROUTING -o enp1s0 -j MASQUERADE 2>/dev/null; then
+	
+    		echo "El enrutamiento está activado"
+	else
+    		echo "El enrutamiento está desactivado"
+	fi
+	
+	
 }
