@@ -1,0 +1,27 @@
+#!/bin/bash
+
+######################################################################
+###  Iniciar
+######################################################################
+fnc_enrutar_iniciar() {
+	echo fnc_enrutar_iniciar
+	
+	ip l s dev enp6s0 up
+	ip a a 10.0.1.10/24 dev enp6s0
+	ip r a default via 10.0.1.1
+	resolvectl dns enp6s0 172.29.230.141
+	
+
+}
+
+######################################################################
+###  Aturar
+######################################################################
+fnc_enrutar_aturar() {
+	echo fnc_enrutar_aturar
+	
+
+	resolvectl revert enp6s0
+   	ip route del default via 10.0.1.1
+	ip a d 10.0.1.10/24 dev enp6s0
+	ip link set dev enp6s0 down
